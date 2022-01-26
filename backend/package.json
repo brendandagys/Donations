@@ -1,0 +1,21 @@
+{
+  "name": "donations-backend",
+  "version": "1.0.0",
+  "description": "An Express server that hosts a GraphQL API to manage donations.",
+  "main": "dist/server.js",
+  "scripts": {
+    "start": "node dist/server.js"
+  },
+  "author": "Brendan Dagys",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.2",
+    "express-graphql": "^0.12.0",
+    "graphql": "^15.8.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.5"
+  }
+}
