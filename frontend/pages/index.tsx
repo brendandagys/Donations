@@ -1,15 +1,26 @@
 import Link from 'next/link'
-import Layout from '../components/Layout'
+import withApollo from '../lib/withApollo'
+import { AllUsersQuery, useAllUsersQuery } from '../generated'
+import { getDataFromTree } from '@apollo/client/react/ssr'
+import { get } from 'lodash'
 
-const IndexPage = () => (
-  <Layout title="Home | Next.js + TypeScript Example">
-    <h1>Hello Next.js 👋</h1>
-    <p>
-      <Link href="/about">
-        <a>About</a>
-      </Link>
-    </p>
-  </Layout>
-)
+const Home = () => {
+  const { data } = useAllUsersQuery()
 
-export default IndexPage
+  const users = get(data, 'users', []) as AllUsersQuery['users']
+
+  return (
+    <div>
+      {users.map(({ id, firstName, lastName, email }) => (
+        <div key={id}>
+          <Link href='/users/[id]' as={`/users/${id}`}>
+            <p>{`${firstName} ${lastName}`}</p>
+          </Link>
+          <p>{email}</p>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+export default withApollo(Home, { getDataFromTree })
