@@ -1,26 +1,21 @@
 import Link from 'next/link'
-import withApollo from '../lib/withApollo'
-import { AllUsersQuery, useAllUsersQuery } from '../generated'
-import { getDataFromTree } from '@apollo/client/react/ssr'
-import { get } from 'lodash'
+import styles from '../styles/Home.module.css'
 
-const Home = () => {
-  const { data } = useAllUsersQuery()
-
-  const users = get(data, 'users', []) as AllUsersQuery['users']
-
-  return (
-    <div>
-      {users.map(({ id, firstName, lastName, email }) => (
-        <div key={id}>
-          <Link href='/users/[id]' as={`/users/${id}`}>
-            <p>{`${firstName} ${lastName}`}</p>
-          </Link>
-          <p>{email}</p>
+const Home = () => (
+  <div>
+    <div className='flexContainer'>
+      <Link href='/donations'>
+        <div className={`${styles.flexItem} flexContainer`}>
+          <p>Click to view and update our list of donations.</p>
         </div>
-      ))}
+      </Link>
+      <Link href='/users'>
+        <div className={`${styles.flexItem} flexContainer`}>
+          <p>Click to view and update our list of users.</p>
+        </div>
+      </Link>
     </div>
-  )
-}
+  </div>
+)
 
-export default withApollo(Home, { getDataFromTree })
+export default Home

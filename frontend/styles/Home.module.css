@@ -1,0 +1,12 @@
+.flexItem {
+  background-color: rgba(185, 133, 214, 0.656);
+  width: 300px;
+  height: 300px;
+  margin: 15px;
+  border-radius: 15px;
+}
+
+.flexItem :hover {
+  opacity: 0.5;
+  cursor: pointer;
+}

@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserMutateType = exports.ErrorType = exports.DonationType = exports.UserType = void 0;
 var graphql_1 = require("graphql");
+var donations_1 = __importDefault(require("../data/donations"));
 var users_1 = __importDefault(require("../data/users"));
 var mutation_1 = __importDefault(require("./mutation"));
 var query_1 = __importDefault(require("./query"));
@@ -16,6 +17,12 @@ exports.UserType = new graphql_1.GraphQLObjectType({
         firstName: { type: (0, graphql_1.GraphQLNonNull)(graphql_1.GraphQLString) },
         lastName: { type: (0, graphql_1.GraphQLNonNull)(graphql_1.GraphQLString) },
         email: { type: (0, graphql_1.GraphQLNonNull)(graphql_1.GraphQLString) },
+        donations: {
+            type: new graphql_1.GraphQLList(exports.DonationType),
+            resolve: function (user) {
+                return donations_1.default.filter(function (donation) { return donation.userId === user.id; });
+            },
+        },
     }); },
 });
 exports.DonationType = new graphql_1.GraphQLObjectType({
@@ -25,7 +32,7 @@ exports.DonationType = new graphql_1.GraphQLObjectType({
         id: { type: (0, graphql_1.GraphQLNonNull)(graphql_1.GraphQLInt) },
         userId: { type: (0, graphql_1.GraphQLNonNull)(graphql_1.GraphQLInt) },
         user: {
-            type: exports.UserType,
+            type: (0, graphql_1.GraphQLNonNull)(exports.UserType),
             resolve: function (donation) { return users_1.default.find(function (user) { return user.id === donation.userId; }); },
         },
         amount: { type: (0, graphql_1.GraphQLNonNull)(graphql_1.GraphQLFloat) },

@@ -7,6 +7,10 @@ export const USERS_QUERY = gql`
       firstName
       lastName
       email
+      donations {
+        amount
+        tip
+      }
     }
   }
 `
@@ -14,6 +18,7 @@ export const USERS_QUERY = gql`
 export const USER_QUERY = gql`
   query OneUser($id: Int!) {
     user(id: $id) {
+      id
       firstName
       lastName
       email

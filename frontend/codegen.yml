@@ -1,6 +1,7 @@
 overwrite: true
+watch: false
 schema: 'http://localhost:5000/graphql'
-documents: 'graphql/*.ts'
+documents: './graphql/**/*.ts'
 
 generates:
   generated/index.tsx:

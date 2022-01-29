@@ -1,6 +1,9 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 import Link from 'next/link'
 import Head from 'next/head'
+import Header from './Header'
+import NavBar from './NavBar'
+import styles from '../styles/Layout.module.css'
 
 type Props = {
   children?: ReactNode
@@ -14,26 +17,16 @@ const Layout = ({ children, title = 'Donations App' }: Props) => (
       <meta charSet='utf-8' />
       <meta name='viewport' content='initial-scale=1.0, width=device-width' />
     </Head>
-    <header>
-      <nav>
-        <Link href='/'>
-          <a>Home</a>
-        </Link>{' '}
-        |{' '}
-        {/* <Link href="/about">
-          <a>About</a>
-        </Link>{' '} */}
-        |{' '}
-        <Link href='/users'>
-          <a>Users List</a>
-        </Link>{' '}
-        | <a href='/api/users'>Users API</a>
-      </nav>
-    </header>
-    {children}
-    <footer>
+    <NavBar />
+    <div className={styles.container}>
+      <main className={styles.main}>
+        <Header />
+        {children}
+      </main>
+    </div>
+    <footer className={styles.footer}>
       <hr />
-      <span>I'm here to stay (Footer)</span>
+      <span>Thanks for visiting! &nbsp;&nbsp;&copy; 2022</span>
     </footer>
   </div>
 )

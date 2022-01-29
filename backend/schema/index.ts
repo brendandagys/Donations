@@ -6,13 +6,15 @@ import {
   GraphQLNonNull,
   GraphQLInt,
   GraphQLUnionType,
+  GraphQLList,
 } from 'graphql'
+import donations from '../data/donations'
 
 import users from '../data/users'
 import RootMutationType from './mutation'
 import RootQueryType from './query'
 
-export const UserType = new GraphQLObjectType({
+export const UserType: GraphQLObjectType = new GraphQLObjectType({
   name: 'User',
   description: 'Represents a user than can make donations',
   fields: () => ({
@@ -20,6 +22,11 @@ export const UserType = new GraphQLObjectType({
     firstName: { type: GraphQLNonNull(GraphQLString) },
     lastName: { type: GraphQLNonNull(GraphQLString) },
     email: { type: GraphQLNonNull(GraphQLString) },
+    donations: {
+      type: new GraphQLList(DonationType),
+      resolve: (user) =>
+        donations.filter((donation) => donation.userId === user.id),
+    },
   }),
 })
 
@@ -30,7 +37,7 @@ export const DonationType = new GraphQLObjectType({
     id: { type: GraphQLNonNull(GraphQLInt) },
     userId: { type: GraphQLNonNull(GraphQLInt) },
     user: {
-      type: UserType,
+      type: GraphQLNonNull(UserType),
       resolve: (donation) => users.find((user) => user.id === donation.userId),
     },
     amount: { type: GraphQLNonNull(GraphQLFloat) },

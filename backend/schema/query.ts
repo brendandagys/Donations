@@ -1,9 +1,4 @@
-import {
-  GraphQLObjectType,
-  GraphQLList,
-  GraphQLInt,
-  GraphQLString,
-} from 'graphql'
+import { GraphQLObjectType, GraphQLList, GraphQLInt } from 'graphql'
 
 import users from '../data/users'
 import donations from '../data/donations'
