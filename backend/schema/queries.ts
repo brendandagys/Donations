@@ -3,8 +3,8 @@ import { GraphQLObjectType, GraphQLList, GraphQLInt } from 'graphql'
 import users from '../data/users'
 import donations from '../data/donations'
 
-import { UserType } from '.'
-import { DonationType } from '.'
+import { UserType } from './types'
+import { DonationType } from './types'
 
 const RootQueryType = new GraphQLObjectType({
   name: 'Query',
@@ -17,7 +17,7 @@ const RootQueryType = new GraphQLObjectType({
     },
     user: {
       type: UserType,
-      description: 'A single book based on the ID',
+      description: 'A single book found by ID',
       args: { id: { type: GraphQLInt } },
       resolve: (_, args) => users.find(({ id }) => id === args.id),
     },
@@ -28,7 +28,7 @@ const RootQueryType = new GraphQLObjectType({
     },
     donation: {
       type: DonationType,
-      description: 'A single donation based on the ID',
+      description: 'A single donation found by ID',
       args: { id: { type: GraphQLInt } },
       resolve: (_, args) => donations.find(({ id }) => id === args.id),
     },

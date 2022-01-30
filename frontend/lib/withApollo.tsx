@@ -12,7 +12,7 @@ const withApollo = nextWithApollo(
     return new ApolloClient({
       ssrMode: typeof window === 'undefined',
       link: new HttpLink({
-        uri: 'http://localhost:5000/graphql',
+        uri: 'http://localhost:5555/graphql',
       }),
       headers: {
         ...(headers as Record<string, string>),

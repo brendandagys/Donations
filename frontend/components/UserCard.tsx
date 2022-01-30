@@ -49,7 +49,9 @@ const UserCard = ({ user, setError }: UserCardProps) => {
           <p>{email}</p>
         </i>
         <div>
-          <button onClick={toggleDonations}>View donations</button>
+          <button disabled={!(donations.length > 0)} onClick={toggleDonations}>
+            View donations
+          </button>
           <div>{showDonations && renderedDonations}</div>
         </div>
       </div>

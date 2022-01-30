@@ -9,8 +9,8 @@ import {
 import users from '../data/users'
 import donations from '../data/donations'
 
-import { UserType } from '.'
-import { DonationType } from '.'
+import { UserType } from './types'
+import { DonationType } from './types'
 
 const RootMutationType = new GraphQLObjectType({
   name: 'Mutation',
@@ -18,7 +18,7 @@ const RootMutationType = new GraphQLObjectType({
   fields: () => ({
     createUser: {
       type: UserType,
-      description: 'Creates a user',
+      description: 'Create a user',
       args: {
         firstName: { type: GraphQLNonNull(GraphQLString) },
         lastName: { type: GraphQLNonNull(GraphQLString) },
@@ -39,7 +39,7 @@ const RootMutationType = new GraphQLObjectType({
 
     updateUser: {
       type: UserType,
-      description: 'Updates a user',
+      description: 'Update a user',
       args: {
         id: { type: GraphQLNonNull(GraphQLInt) },
         firstName: { type: GraphQLString },
@@ -48,9 +48,7 @@ const RootMutationType = new GraphQLObjectType({
       },
       resolve: (_, { id, ...rest }) => {
         const userIndex = users.findIndex((user) => user.id === id)
-        if (userIndex === -1) {
-          throw new Error('No user with that ID exists')
-        }
+        if (userIndex === -1) throw new Error('No user with that ID exists')
 
         users[userIndex] = { ...users[userIndex], ...rest }
         return users[userIndex]
@@ -59,25 +57,21 @@ const RootMutationType = new GraphQLObjectType({
 
     deleteUser: {
       type: UserType,
-      description: 'Deletes a user',
+      description: 'Delete a user',
       args: {
         id: { type: GraphQLNonNull(GraphQLInt) },
       },
       resolve: (_, { id }) => {
         const userIndex = users.findIndex((user) => user.id === id)
-        if (userIndex === -1) {
-          throw new Error('No user with that ID exists')
-        }
+        if (userIndex === -1) throw new Error('No user with that ID exists')
 
-        const user = users[userIndex]
-        users.splice(userIndex, 1)
-        return user
+        return users.splice(userIndex, 1)[0]
       },
     },
 
     createDonation: {
       type: DonationType,
-      description: 'Creates a donation',
+      description: 'Create a donation',
       args: {
         userId: { type: GraphQLNonNull(GraphQLInt) },
         amount: { type: GraphQLNonNull(GraphQLFloat) },
@@ -85,6 +79,7 @@ const RootMutationType = new GraphQLObjectType({
       },
       resolve: (_, args) => {
         const user = users.find(({ id }) => id === args.userId)
+        if (!user) throw new Error('No user with that ID exists')
 
         const donation = {
           id: Math.max(...donations.map(({ id }) => id)) + 1,
@@ -94,16 +89,13 @@ const RootMutationType = new GraphQLObjectType({
         }
 
         donations.push(donation)
-
-        const { id, amount, tip } = donation
-
-        return { id, user, amount, tip }
+        return donation
       },
     },
 
     updateDonation: {
       type: DonationType,
-      description: 'Updates a donation',
+      description: 'Update a donation',
       args: {
         id: { type: GraphQLNonNull(GraphQLInt) },
         userId: { type: GraphQLInt },
@@ -114,9 +106,8 @@ const RootMutationType = new GraphQLObjectType({
         const donationIndex = donations.findIndex(
           (donation) => donation.id === id
         )
-        if (donationIndex === -1) {
+        if (donationIndex === -1)
           throw new Error('No donation with that ID exists')
-        }
 
         donations[donationIndex] = {
           ...donations[donationIndex],
@@ -130,7 +121,7 @@ const RootMutationType = new GraphQLObjectType({
 
     deleteDonation: {
       type: DonationType,
-      description: 'Deletes a donation',
+      description: 'Delete a donation',
       args: {
         id: { type: GraphQLNonNull(GraphQLInt) },
       },
@@ -138,14 +129,10 @@ const RootMutationType = new GraphQLObjectType({
         const donationIndex = donations.findIndex(
           (donation) => donation.id === id
         )
-        if (donationIndex === -1) {
+        if (donationIndex === -1)
           throw new Error('No donation with that ID exists')
-        }
 
-        const donation = donations[donationIndex]
-
-        donations.splice(donationIndex, 1)
-        return donation
+        return donations.splice(donationIndex, 1)[0]
       },
     },
   }),

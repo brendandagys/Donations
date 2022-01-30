@@ -28,17 +28,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var graphql_1 = require("graphql");
 var users_1 = __importDefault(require("../data/users"));
 var donations_1 = __importDefault(require("../data/donations"));
-var _1 = require(".");
-var _2 = require(".");
-var _3 = require(".");
-var _4 = require(".");
+var types_1 = require("./types");
+var types_2 = require("./types");
 var RootMutationType = new graphql_1.GraphQLObjectType({
     name: 'Mutation',
     description: 'Root Mutation',
     fields: function () { return ({
         createUser: {
-            type: _1.UserType,
-            description: 'Creates a user',
+            type: types_1.UserType,
+            description: 'Create a user',
             args: {
                 firstName: { type: (0, graphql_1.GraphQLNonNull)(graphql_1.GraphQLString) },
                 lastName: { type: (0, graphql_1.GraphQLNonNull)(graphql_1.GraphQLString) },
@@ -59,8 +57,8 @@ var RootMutationType = new graphql_1.GraphQLObjectType({
             },
         },
         updateUser: {
-            type: _3.UserMutateType,
-            description: 'Updates a user',
+            type: types_1.UserType,
+            description: 'Update a user',
             args: {
                 id: { type: (0, graphql_1.GraphQLNonNull)(graphql_1.GraphQLInt) },
                 firstName: { type: graphql_1.GraphQLString },
@@ -70,33 +68,29 @@ var RootMutationType = new graphql_1.GraphQLObjectType({
             resolve: function (_, _a) {
                 var id = _a.id, rest = __rest(_a, ["id"]);
                 var userIndex = users_1.default.findIndex(function (user) { return user.id === id; });
-                if (userIndex === -1) {
-                    return { error: 'No user with that ID exists' };
-                }
+                if (userIndex === -1)
+                    throw new Error('No user with that ID exists');
                 users_1.default[userIndex] = __assign(__assign({}, users_1.default[userIndex]), rest);
                 return users_1.default[userIndex];
             },
         },
         deleteUser: {
-            type: _3.UserMutateType,
-            description: 'Deletes a user',
+            type: types_1.UserType,
+            description: 'Delete a user',
             args: {
                 id: { type: (0, graphql_1.GraphQLNonNull)(graphql_1.GraphQLInt) },
             },
             resolve: function (_, _a) {
                 var id = _a.id;
                 var userIndex = users_1.default.findIndex(function (user) { return user.id === id; });
-                if (userIndex === -1) {
-                    return { error: 'No user with that ID exists' };
-                }
-                var user = users_1.default[userIndex];
-                users_1.default.splice(userIndex, 1);
-                return user;
+                if (userIndex === -1)
+                    throw new Error('No user with that ID exists');
+                return users_1.default.splice(userIndex, 1)[0];
             },
         },
         createDonation: {
-            type: _2.DonationType,
-            description: 'Creates a donation',
+            type: types_2.DonationType,
+            description: 'Create a donation',
             args: {
                 userId: { type: (0, graphql_1.GraphQLNonNull)(graphql_1.GraphQLInt) },
                 amount: { type: (0, graphql_1.GraphQLNonNull)(graphql_1.GraphQLFloat) },
@@ -107,6 +101,8 @@ var RootMutationType = new graphql_1.GraphQLObjectType({
                     var id = _a.id;
                     return id === args.userId;
                 });
+                if (!user)
+                    throw new Error('No user with that ID exists');
                 var donation = {
                     id: Math.max.apply(Math, donations_1.default.map(function (_a) {
                         var id = _a.id;
@@ -117,13 +113,12 @@ var RootMutationType = new graphql_1.GraphQLObjectType({
                     tip: args.tip,
                 };
                 donations_1.default.push(donation);
-                var id = donation.id, amount = donation.amount, tip = donation.tip;
-                return { id: id, user: user, amount: amount, tip: tip };
+                return donation;
             },
         },
         updateDonation: {
-            type: _4.DonationMutateType,
-            description: 'Updates a donation',
+            type: types_2.DonationType,
+            description: 'Update a donation',
             args: {
                 id: { type: (0, graphql_1.GraphQLNonNull)(graphql_1.GraphQLInt) },
                 userId: { type: graphql_1.GraphQLInt },
@@ -131,32 +126,26 @@ var RootMutationType = new graphql_1.GraphQLObjectType({
                 tip: { type: graphql_1.GraphQLFloat },
             },
             resolve: function (_, _a) {
-                // const user = users.find(({ id }) => id === userId)
                 var id = _a.id, userId = _a.userId, rest = __rest(_a, ["id", "userId"]);
                 var donationIndex = donations_1.default.findIndex(function (donation) { return donation.id === id; });
-                if (donationIndex === -1) {
+                if (donationIndex === -1)
                     throw new Error('No donation with that ID exists');
-                }
                 donations_1.default[donationIndex] = __assign(__assign(__assign({}, donations_1.default[donationIndex]), { userId: userId }), rest);
-                // const { id: donationId, amount, tip } = donations[donationIndex]
                 return donations_1.default[donationIndex];
             },
         },
         deleteDonation: {
-            type: _2.DonationType,
-            description: 'Deletes a donation',
+            type: types_2.DonationType,
+            description: 'Delete a donation',
             args: {
                 id: { type: (0, graphql_1.GraphQLNonNull)(graphql_1.GraphQLInt) },
             },
             resolve: function (_, _a) {
                 var id = _a.id;
                 var donationIndex = donations_1.default.findIndex(function (donation) { return donation.id === id; });
-                if (donationIndex === -1) {
+                if (donationIndex === -1)
                     throw new Error('No donation with that ID exists');
-                }
-                var donation = donations_1.default[donationIndex];
-                donations_1.default.splice(donationIndex, 1);
-                return donation;
+                return donations_1.default.splice(donationIndex, 1)[0];
             },
         },
     }); },
