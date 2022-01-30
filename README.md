@@ -6,37 +6,37 @@ This is a demo application of a donations platform. Follow the instructions belo
 
 Clone the repository to your local machine and navigate to the project folder.
 
-Navigate into the client directory
+1. Navigate into the frontend directory:
 
 ```
 cd frontend
 ```
 
-Install client dependencies
+2. Install frontend dependencies:
 
 ```
 npm i
 ```
 
-Run test suite
+3. Run test suite:
 
 ```
 npm test
 ```
 
-Navigate into backend API directory
+4. Navigate into backend directory:
 
 ```
 cd ../backend
 ```
 
-Install backend dependencies
+5. Install backend dependencies:
 
 ```
 npm i
 ```
 
-Launch full stack using the following command
+6. Launch both the backend and frontend using the following command:
 
 ```
 npm run dev
