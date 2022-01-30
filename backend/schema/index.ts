@@ -8,11 +8,12 @@ import {
   GraphQLUnionType,
   GraphQLList,
 } from 'graphql'
-import donations from '../data/donations'
 
 import users from '../data/users'
-import RootMutationType from './mutation'
-import RootQueryType from './query'
+import donations from '../data/donations'
+
+import RootMutationType from './mutations'
+import RootQueryType from './queries'
 
 export const UserType: GraphQLObjectType = new GraphQLObjectType({
   name: 'User',
@@ -35,9 +36,8 @@ export const DonationType = new GraphQLObjectType({
   description: 'Represents a donation that can be made by a user',
   fields: () => ({
     id: { type: GraphQLNonNull(GraphQLInt) },
-    userId: { type: GraphQLNonNull(GraphQLInt) },
     user: {
-      type: GraphQLNonNull(UserType),
+      type: UserType,
       resolve: (donation) => users.find((user) => user.id === donation.userId),
     },
     amount: { type: GraphQLNonNull(GraphQLFloat) },
@@ -45,26 +45,38 @@ export const DonationType = new GraphQLObjectType({
   }),
 })
 
-export const ErrorType = new GraphQLObjectType({
-  name: 'Error',
-  description:
-    'Contains errors that occur in GraphQL, such as improper arguments',
-  fields: () => ({
-    error: { type: GraphQLString },
-  }),
-})
+// export const ErrorType = new GraphQLObjectType({
+//   name: 'Error',
+//   description:
+//     'Contains errors that occur in GraphQL, such as improper arguments',
+//   fields: () => ({
+//     error: { type: GraphQLString },
+//   }),
+// })
 
-export const UserMutateType = new GraphQLUnionType({
-  name: 'UpdateUser',
-  types: [UserType, ErrorType],
-  resolveType: ({ error }) => {
-    if (error) {
-      return ErrorType
-    } else {
-      return UserType
-    }
-  },
-})
+// export const UserMutateType = new GraphQLUnionType({
+//   name: 'UpdateUser',
+//   types: [UserType, ErrorType],
+//   resolveType: ({ error }) => {
+//     if (error) {
+//       return ErrorType
+//     } else {
+//       return UserType
+//     }
+//   },
+// })
+
+// export const DonationMutateType = new GraphQLUnionType({
+//   name: 'UpdateDonation',
+//   types: [DonationType, ErrorType],
+//   resolveType: ({ error }) => {
+//     if (error) {
+//       return ErrorType
+//     } else {
+//       return DonationType
+//     }
+//   },
+// })
 
 const schema = new GraphQLSchema({
   query: RootQueryType,

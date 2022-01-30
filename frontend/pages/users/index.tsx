@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import Link from 'next/link'
 import withApollo from '../../lib/withApollo'
 import { User, useAllUsersQuery } from '../../generated'
@@ -7,11 +7,12 @@ import { get } from 'lodash'
 import UserCard from '../../components/UserCard'
 import styles from '../../styles/Users.module.css'
 
-// export type Mode = 'create' | 'update'
-
-const UsersPage = () => {
-  const { data } = useAllUsersQuery()
+export const UsersPageNoApollo = () => {
+  const { data, loading } = useAllUsersQuery()
   const users = get(data, 'users', []) as User[]
+  const [error, setError] = useState('')
+
+  if (loading) return <h3>Loading...</h3>
 
   return (
     <>
@@ -19,19 +20,24 @@ const UsersPage = () => {
         <button className={styles.button}>Go Home</button>
       </Link>
       <Link
-        href={{ pathname: '/users/new', query: { mode: undefined } }}
-        as={`/users/create`}
+        href={{ pathname: '/users/[id]', query: { id: 'create' } }}
+        as='users/create'
       >
         <button className={styles.create}>Create New User</button>
       </Link>
-      {users.map((user) => (
-        <>
-          <UserCard key={user.id} user={user} />
-          <hr className={styles.hr} />
-        </>
-      ))}
+      <p>{error}</p>
+      {users.length > 0 ? (
+        users.map((user) => (
+          <Fragment key={user.id}>
+            <UserCard user={user} setError={setError} />
+            <hr className={styles.hr} />
+          </Fragment>
+        ))
+      ) : (
+        <h2>No users in database!</h2>
+      )}
     </>
   )
 }
 
-export default withApollo(UsersPage, { getDataFromTree })
+export default withApollo(UsersPageNoApollo, { getDataFromTree })

@@ -5,15 +5,20 @@ import withApollo from '../../lib/withApollo'
 import { useOneUserQuery } from '../../generated'
 import UserForm from '../../components/UserForm'
 
-const UserPage = ({ query }) => {
+type UserPageProps = {
+  query: {
+    id: string
+  }
+}
+
+export const UserPageNoApollo = ({ query }: UserPageProps) => {
   // const mode = get(query, 'mode') as 'create' | 'update'
   const userId = get(query, 'id')
+
   if (userId !== 'create') {
-    console.log({ userId })
     const { data, loading, error } = useOneUserQuery({
       variables: { id: parseInt(userId) },
     })
-    console.log(data)
     if (loading) return <h3>Loading...</h3>
     if (error) return <h3>{`Error! ${{ error }}`}</h3>
     else
@@ -37,4 +42,4 @@ const UserPage = ({ query }) => {
   }
 }
 
-export default withApollo(UserPage, { getDataFromTree })
+export default withApollo(UserPageNoApollo, { getDataFromTree })

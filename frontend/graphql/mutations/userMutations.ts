@@ -28,17 +28,10 @@ export const USER_UPDATE = gql`
       lastName: $lastName
       email: $email
     ) {
-      __typename
-      ... on User {
-        id
-        firstName
-        lastName
-        email
-      }
-      __typename
-      ... on Error {
-        error
-      }
+      id
+      firstName
+      lastName
+      email
     }
   }
 `
@@ -46,16 +39,9 @@ export const USER_UPDATE = gql`
 export const USER_DELETE = gql`
   mutation DeleteUser($id: Int!) {
     deleteUser(id: $id) {
-      __typename
-      ... on User {
-        firstName
-        lastName
-        email
-      }
-      __typename
-      ... on Error {
-        error
-      }
+      firstName
+      lastName
+      email
     }
   }
 `

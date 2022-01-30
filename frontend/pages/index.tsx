@@ -6,12 +6,12 @@ const Home = () => (
     <div className='flexContainer'>
       <Link href='/donations'>
         <div className={`${styles.flexItem} flexContainer`}>
-          <p>Click to view and update our list of donations.</p>
+          <a>Click to view and update our list of donations.</a>
         </div>
       </Link>
       <Link href='/users'>
         <div className={`${styles.flexItem} flexContainer`}>
-          <p>Click to view and update our list of users.</p>
+          <a>Click to view and update our list of users.</a>
         </div>
       </Link>
     </div>

@@ -5,10 +5,11 @@ import {
   useCreateUserMutation,
   useUpdateUserMutation,
 } from '../generated'
+import { DONATIONS_QUERY } from '../graphql/queries/donationQueries'
 import styles from '../styles/User.module.css'
+import { USERS_QUERY } from '../graphql/queries/userQueries'
 
 type UserFormProps = {
-  //   mode: 'create' | 'update'
   user?: OneUserQuery['user']
 }
 
@@ -22,11 +23,15 @@ const UserForm = ({ user }: UserFormProps) => {
   const [
     createUser,
     { data: createData, loading: createLoading, error: createError },
-  ] = useCreateUserMutation()
+  ] = useCreateUserMutation({
+    refetchQueries: [{ query: DONATIONS_QUERY }, { query: USERS_QUERY }],
+  })
   const [
     updateUser,
     { data: updateData, loading: updateLoading, error: updateError },
-  ] = useUpdateUserMutation()
+  ] = useUpdateUserMutation({
+    refetchQueries: [{ query: DONATIONS_QUERY }, { query: USERS_QUERY }],
+  })
 
   if (createLoading || updateLoading) return <h3>Submitting...</h3>
   if (createError || updateError)

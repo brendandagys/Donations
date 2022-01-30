@@ -1,20 +1,23 @@
 import Link from 'next/link'
 import styles from '../styles/Users.module.css'
-import { useState } from 'react'
-import DonationCard from './DonationCard'
-import { useDeleteUserMutation, User } from '../generated'
+import { SetStateAction, useState } from 'react'
+import DonationCard from './DonationChildCard'
+import { User, useDeleteUserMutation } from '../generated'
+import { Dispatch } from 'react'
+import { DONATIONS_QUERY } from '../graphql/queries/donationQueries'
 
 type UserCardProps = {
   user: User
+  setError: Dispatch<SetStateAction<string>>
 }
 
-const UserCard = ({ user }: UserCardProps) => {
+const UserCard = ({ user, setError }: UserCardProps) => {
   const { id, firstName, lastName, email, donations = [] } = user
 
   const [showDonations, setShowDonations] = useState(false)
 
   const [deleteUser, { data, loading, error }] = useDeleteUserMutation({
-    refetchQueries: ['AllUsers'],
+    refetchQueries: [{ query: DONATIONS_QUERY }, 'AllUsers'],
   })
 
   const toggleDonations = () => {
@@ -32,6 +35,8 @@ const UserCard = ({ user }: UserCardProps) => {
       key={index}
     />
   ))
+
+  if (error) setError(`Delete error: ${error.message}`)
 
   return (
     <div className='flexContainer' key={id}>
