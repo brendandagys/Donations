@@ -1,10 +1,9 @@
+import { useState, Dispatch, SetStateAction } from 'react'
 import Link from 'next/link'
-import styles from '../styles/Users.module.css'
-import { SetStateAction, useState } from 'react'
 import DonationCard from './DonationChildCard'
 import { User, useDeleteUserMutation } from '../generated'
-import { Dispatch } from 'react'
 import { DONATIONS_QUERY } from '../graphql/queries/donationQueries'
+import styles from '../styles/Commons.module.css'
 
 type UserCardProps = {
   user: User
@@ -16,7 +15,7 @@ const UserCard = ({ user, setError }: UserCardProps) => {
 
   const [showDonations, setShowDonations] = useState(false)
 
-  const [deleteUser, { data, loading, error }] = useDeleteUserMutation({
+  const [deleteUser, { loading, error }] = useDeleteUserMutation({
     refetchQueries: [{ query: DONATIONS_QUERY }, 'AllUsers'],
   })
 
@@ -37,17 +36,18 @@ const UserCard = ({ user, setError }: UserCardProps) => {
   ))
 
   if (error) setError(`Delete error: ${error.message}`)
+  if (loading) return <h3>Deleting...</h3>
 
   return (
     <div className='flexContainer' key={id}>
       <div className={`${styles.flexItem} flexContainer`}>
-        <b>
-          <p>{`${firstName} ${lastName}`}</p>
-        </b>
+        <p className={styles.fullwidth}>
+          <b>{`${firstName} ${lastName}`}</b>
+        </p>
 
-        <i>
-          <p>{email}</p>
-        </i>
+        <p className={styles.fullwidth}>
+          <i>{email}</i>
+        </p>
         <div>
           <button disabled={!(donations.length > 0)} onClick={toggleDonations}>
             View donations
@@ -55,17 +55,13 @@ const UserCard = ({ user, setError }: UserCardProps) => {
           <div>{showDonations && renderedDonations}</div>
         </div>
       </div>
+
       <div className={styles.userActionsDiv}>
         <Link
           href={{ pathname: '/users/[id]', query: { id } }}
           as={`/users/${id}`}
         >
-          <button
-            // onClick={() => handleToggleForm('update')}
-            className={styles.edit}
-          >
-            Edit User
-          </button>
+          <button className={styles.edit}>Edit User</button>
         </Link>
         <button onClick={() => handleDeleteUser(id)} className={styles.delete}>
           Delete User

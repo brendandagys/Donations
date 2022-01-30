@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "dev": "next",
-    "test": "jest --watch",
+    "test": "jest",
     "build": "next build",
     "start": "next start",
     "type-check": "tsc",

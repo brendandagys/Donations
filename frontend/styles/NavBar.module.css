@@ -1,17 +1,28 @@
 .nav {
-  height: 50px;
-  padding: 10px;
+  align-items: center;
   background: #000;
   color: #fff;
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
+  height: 50px;
+  justify-content: center;
+  padding: 10px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+.nav li {
+  width: 100px;
+}
+
+.nav li :hover {
+  opacity: 80%;
 }
 
 .nav ul {
+  align-items: center;
   display: flex;
   justify-content: center;
-  align-items: center;
   list-style: none;
 }
 

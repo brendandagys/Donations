@@ -16,13 +16,16 @@ const Layout = ({ children, title = 'Donations App' }: Props) => (
       <meta charSet='utf-8' />
       <meta name='viewport' content='initial-scale=1.0, width=device-width' />
     </Head>
+
     <NavBar />
+
     <div className={styles.container}>
       <main className={styles.main}>
         <Header />
         {children}
       </main>
     </div>
+
     <footer className={styles.footer}>
       <hr />
       <span>Thanks for visiting! &nbsp;&nbsp;&copy; 2022</span>

@@ -1,12 +1,12 @@
 import Link from 'next/link'
-import { get } from 'lodash'
-import { getDataFromTree } from '@apollo/client/react/ssr'
 import withApollo from '../../lib/withApollo'
+import { getDataFromTree } from '@apollo/client/react/ssr'
 import {
   useOneDonationQuery,
   useAllUsersSelectInputQuery,
 } from '../../generated'
 import DonationForm from '../../components/DonationForm'
+import { get } from 'lodash'
 
 type DonationPageProps = {
   query: {
@@ -23,6 +23,7 @@ export const DonationPageNoApollo = ({ query }: DonationPageProps) => {
     const { data, loading, error } = useOneDonationQuery({
       variables: { id: parseInt(userId) },
     })
+
     if (loading) return <h3>Loading...</h3>
     if (error) return <h3>{`Error! ${{ error }}`}</h3>
     else

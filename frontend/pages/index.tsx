@@ -9,6 +9,7 @@ const Home = () => (
           <a>Click to view and update our list of donations.</a>
         </div>
       </Link>
+
       <Link href='/users'>
         <div className={`${styles.flexItem} flexContainer`}>
           <a>Click to view and update our list of users.</a>

@@ -1,3 +1,19 @@
+.description {
+  font-size: 1.5rem;
+  line-height: 1.5;
+}
+
+.title {
+  font-size: 4rem;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.title,
+.description {
+  text-align: center;
+}
+
 .title a,
 .title span {
   color: #0070f3;
@@ -8,20 +24,4 @@
 .title a:focus,
 .title a:active {
   text-decoration: underline;
-}
-
-.title {
-  margin: 0;
-  line-height: 1.15;
-  font-size: 4rem;
-}
-
-.title,
-.description {
-  text-align: center;
-}
-
-.description {
-  line-height: 1.5;
-  font-size: 1.5rem;
 }

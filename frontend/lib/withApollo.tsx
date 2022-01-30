@@ -7,12 +7,14 @@ import {
 import { useRouter } from 'next/router'
 import nextWithApollo from 'next-with-apollo'
 
+const PORT = process.env.PORT ?? 5555
+
 const withApollo = nextWithApollo(
   ({ initialState, headers }) => {
     return new ApolloClient({
       ssrMode: typeof window === 'undefined',
       link: new HttpLink({
-        uri: 'http://localhost:5555/graphql',
+        uri: `http://localhost:${PORT}/graphql`,
       }),
       headers: {
         ...(headers as Record<string, string>),
@@ -23,6 +25,7 @@ const withApollo = nextWithApollo(
   {
     render: ({ Page, props }) => {
       const router = useRouter()
+
       return (
         <ApolloProvider client={props.apollo}>
           <Page {...props} {...router} />

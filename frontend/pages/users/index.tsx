@@ -1,31 +1,34 @@
-import { Fragment, useState } from 'react'
+import { useState, Fragment } from 'react'
 import Link from 'next/link'
 import withApollo from '../../lib/withApollo'
-import { User, useAllUsersQuery } from '../../generated'
 import { getDataFromTree } from '@apollo/client/react/ssr'
-import { get } from 'lodash'
+import { User, useAllUsersQuery } from '../../generated'
 import UserCard from '../../components/UserCard'
-import styles from '../../styles/Users.module.css'
+import { get } from 'lodash'
+import styles from '../../styles/Commons.module.css'
 
 export const UsersPageNoApollo = () => {
   const { data, loading } = useAllUsersQuery()
   const users = get(data, 'users', []) as User[]
   const [error, setError] = useState('')
 
-  if (loading) return <h3>Loading...</h3>
+  if (loading) return <h3>Loading users...</h3>
 
   return (
     <>
       <Link href='/'>
         <button className={styles.button}>Go Home</button>
       </Link>
+
       <Link
         href={{ pathname: '/users/[id]', query: { id: 'create' } }}
         as='users/create'
       >
         <button className={styles.create}>Create New User</button>
       </Link>
-      <p>{error}</p>
+
+      {error ? <p className={styles.errorText}>{error}</p> : null}
+
       {users.length > 0 ? (
         users.map((user) => (
           <Fragment key={user.id}>
@@ -34,7 +37,7 @@ export const UsersPageNoApollo = () => {
           </Fragment>
         ))
       ) : (
-        <h2>No users in database!</h2>
+        <h2 className={styles.center}>No users in database!</h2>
       )}
     </>
   )

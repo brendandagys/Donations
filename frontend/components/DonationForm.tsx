@@ -7,8 +7,8 @@ import {
   AllUsersSelectInputQuery,
 } from '../generated'
 import { USERS_QUERY } from '../graphql/queries/userQueries'
-import styles from '../styles/User.module.css'
 import { DONATIONS_QUERY } from '../graphql/queries/donationQueries'
+import styles from '../styles/User.module.css'
 
 type DonationFormProps = {
   donation?: OneDonationQuery['donation']
@@ -24,18 +24,33 @@ const DonationForm = ({ donation, selectOptions }: DonationFormProps) => {
     donation ? donation.user.id.toString() : '1'
   )
 
-  const [
-    createDonation,
-    { data: createData, loading: createLoading, error: createError },
-  ] = useCreateDonationMutation({
-    refetchQueries: [{ query: USERS_QUERY }, { query: DONATIONS_QUERY }],
-  })
-  const [
-    updateDonation,
-    { data: updateData, loading: updateLoading, error: updateError },
-  ] = useUpdateDonationMutation({
-    refetchQueries: [{ query: USERS_QUERY }, { query: DONATIONS_QUERY }],
-  })
+  const [createDonation, { loading: createLoading, error: createError }] =
+    useCreateDonationMutation({
+      refetchQueries: [{ query: DONATIONS_QUERY }, { query: USERS_QUERY }],
+    })
+
+  const [updateDonation, { loading: updateLoading, error: updateError }] =
+    useUpdateDonationMutation({
+      refetchQueries: [{ query: DONATIONS_QUERY }, { query: USERS_QUERY }],
+    })
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    donation
+      ? updateDonation({
+          variables: {
+            id: donation.id,
+            amount,
+            tip,
+            userId: parseInt(userId),
+          },
+        })
+      : createDonation({
+          variables: { amount, tip, userId: parseInt(userId) },
+        })
+    router.push('/donations')
+  }
 
   const renderedSelectOptions = selectOptions?.users.map(
     ({ id, firstName, lastName }) => (
@@ -49,27 +64,7 @@ const DonationForm = ({ donation, selectOptions }: DonationFormProps) => {
 
   return (
     <div className={styles.form}>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-
-          if (!donation) {
-            createDonation({
-              variables: { amount, tip, userId: parseInt(userId) },
-            })
-            router.push('/donations')
-          } else {
-            updateDonation({
-              variables: {
-                id: donation.id,
-                amount,
-                tip,
-                userId: parseInt(userId),
-              },
-            })
-          }
-        }}
-      >
+      <form onSubmit={handleSubmit}>
         <label>
           User
           <select
@@ -81,6 +76,7 @@ const DonationForm = ({ donation, selectOptions }: DonationFormProps) => {
             {renderedSelectOptions}
           </select>
         </label>
+
         <label>
           Amount
           <input
@@ -90,6 +86,7 @@ const DonationForm = ({ donation, selectOptions }: DonationFormProps) => {
             onChange={(e) => setAmount(parseFloat(e.target.value))}
           />
         </label>
+
         <label>
           Tip
           <input
@@ -101,7 +98,7 @@ const DonationForm = ({ donation, selectOptions }: DonationFormProps) => {
         </label>
 
         <button type='submit'>
-          {!donation ? 'Create Donation' : 'Update Donation'}
+          {donation ? 'Update Donation' : 'Create Donation'}
         </button>
       </form>
     </div>

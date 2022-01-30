@@ -1,0 +1,54 @@
+.button {
+  margin: 15px;
+}
+
+.center {
+  margin: auto;
+}
+
+.create {
+  color: blue;
+}
+
+.delete {
+  color: red;
+}
+
+.donationBox {
+  background-color: dodgerblue;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  margin-top: 20px;
+  padding: 5px 20px;
+}
+
+.edit {
+  color: green;
+}
+
+.errorText {
+  color: red;
+}
+
+.flexItem {
+  background-color: rgba(205, 200, 207, 0.656);
+  border-radius: 15px;
+  margin: 15px;
+  width: 300px;
+}
+
+.fullwidth {
+  width: 100%;
+}
+
+.hr {
+  width: 80%;
+}
+
+.userActionsDiv {
+  width: 100%;
+}
+
+.userActionsDiv button {
+  margin: 0 10px;
+}

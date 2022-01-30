@@ -26,7 +26,7 @@ const RootMutationType = new GraphQLObjectType({
       },
       resolve: (_, args) => {
         const user = {
-          id: Math.max(...users.map(({ id }) => id)) + 1,
+          id: users.length > 0 ? Math.max(...users.map(({ id }) => id)) + 1 : 1,
           firstName: args.firstName,
           lastName: args.lastName,
           email: args.email,
@@ -82,7 +82,10 @@ const RootMutationType = new GraphQLObjectType({
         if (!user) throw new Error('No user with that ID exists')
 
         const donation = {
-          id: Math.max(...donations.map(({ id }) => id)) + 1,
+          id:
+            donations.length > 0
+              ? Math.max(...donations.map(({ id }) => id)) + 1
+              : 1,
           userId: args.userId,
           amount: args.amount,
           tip: args.tip,

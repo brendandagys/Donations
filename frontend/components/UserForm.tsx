@@ -1,13 +1,13 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import {
   OneUserQuery,
   useCreateUserMutation,
   useUpdateUserMutation,
 } from '../generated'
+import { USERS_QUERY } from '../graphql/queries/userQueries'
 import { DONATIONS_QUERY } from '../graphql/queries/donationQueries'
 import styles from '../styles/User.module.css'
-import { USERS_QUERY } from '../graphql/queries/userQueries'
 
 type UserFormProps = {
   user?: OneUserQuery['user']
@@ -20,18 +20,28 @@ const UserForm = ({ user }: UserFormProps) => {
   const [lastName, setLastName] = useState(user ? user.lastName : '')
   const [email, setEmail] = useState(user ? user.email : '')
 
-  const [
-    createUser,
-    { data: createData, loading: createLoading, error: createError },
-  ] = useCreateUserMutation({
-    refetchQueries: [{ query: DONATIONS_QUERY }, { query: USERS_QUERY }],
-  })
-  const [
-    updateUser,
-    { data: updateData, loading: updateLoading, error: updateError },
-  ] = useUpdateUserMutation({
-    refetchQueries: [{ query: DONATIONS_QUERY }, { query: USERS_QUERY }],
-  })
+  const [createUser, { loading: createLoading, error: createError }] =
+    useCreateUserMutation({
+      refetchQueries: [{ query: USERS_QUERY }, { query: DONATIONS_QUERY }],
+    })
+
+  const [updateUser, { loading: updateLoading, error: updateError }] =
+    useUpdateUserMutation({
+      refetchQueries: [{ query: USERS_QUERY }, { query: DONATIONS_QUERY }],
+    })
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    if (!user) {
+      createUser({ variables: { firstName, lastName, email } })
+      router.push('/users')
+    } else {
+      updateUser({
+        variables: { id: user.id, firstName, lastName, email },
+      })
+    }
+  }
 
   if (createLoading || updateLoading) return <h3>Submitting...</h3>
   if (createError || updateError)
@@ -39,20 +49,7 @@ const UserForm = ({ user }: UserFormProps) => {
 
   return (
     <div className={styles.form}>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-
-          if (!user) {
-            createUser({ variables: { firstName, lastName, email } })
-            router.push('/users')
-          } else {
-            updateUser({
-              variables: { id: user.id, firstName, lastName, email },
-            })
-          }
-        }}
-      >
+      <form onSubmit={handleSubmit}>
         <label>
           First Name
           <input
@@ -62,6 +59,7 @@ const UserForm = ({ user }: UserFormProps) => {
             onChange={(e) => setFirstName(e.target.value)}
           />
         </label>
+
         <label>
           Last Name
           <input
@@ -71,6 +69,7 @@ const UserForm = ({ user }: UserFormProps) => {
             onChange={(e) => setLastName(e.target.value)}
           />
         </label>
+
         <label>
           Email
           <input
@@ -81,7 +80,7 @@ const UserForm = ({ user }: UserFormProps) => {
           />
         </label>
 
-        <button type='submit'>{!user ? 'Create User' : 'Update User'}</button>
+        <button type='submit'>{user ? 'Update User' : 'Create User'}</button>
       </form>
     </div>
   )

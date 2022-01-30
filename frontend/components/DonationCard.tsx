@@ -1,8 +1,9 @@
-import Link from 'next/link'
-import styles from '../styles/Users.module.css'
-import { Donation, useDeleteDonationMutation } from '../generated'
 import { Dispatch, SetStateAction } from 'react'
+import Link from 'next/link'
+import { Donation, useDeleteDonationMutation } from '../generated'
 import { USERS_QUERY } from '../graphql/queries/userQueries'
+import { DONATIONS_QUERY } from '../graphql/queries/donationQueries'
+import styles from '../styles/Commons.module.css'
 
 type DonationCardProps = {
   donation: Donation
@@ -12,8 +13,8 @@ type DonationCardProps = {
 const DonationCard = ({ donation, setError }: DonationCardProps) => {
   const { id, user, amount, tip } = donation
 
-  const [deleteDonation, { data, loading, error }] = useDeleteDonationMutation({
-    refetchQueries: [{ query: USERS_QUERY }, 'AllDonations'],
+  const [deleteDonation, { loading, error }] = useDeleteDonationMutation({
+    refetchQueries: [{ query: USERS_QUERY }, { query: DONATIONS_QUERY }],
   })
 
   const handleDeleteDonation = (donationId: number) =>
@@ -24,15 +25,12 @@ const DonationCard = ({ donation, setError }: DonationCardProps) => {
       {user ? (
         <>
           <p>
-            <small>
-              <b>Donor:</b> {`${user.firstName} ${user.lastName}`}
-            </small>
+            <b>Donor:</b> {`${user.firstName} ${user.lastName}`}
           </p>
+
           <p>
-            <small>
-              <b>Email:</b> {`${user.email}`}
-            </small>
-          </p>{' '}
+            <b>Email:</b> {`${user.email}`}
+          </p>
         </>
       ) : (
         <h3>This user is no longer registered</h3>
@@ -41,21 +39,30 @@ const DonationCard = ({ donation, setError }: DonationCardProps) => {
   )
 
   if (error) setError(error.message)
-  // if (loading) return <h3>Deleting...</h3>
+  if (loading) return <h3>Deleting...</h3>
 
   return (
     <div className='flexContainer' key={id}>
       <div className={`${styles.flexItem} flexContainer`}>
-        <div style={{ width: '100%' }}>
-          <b>
-            <p>Amount</p>
-          </b>
+        <div className={styles.fullwidth}>
+          <p>
+            <span>
+              <b>Donation ID:</b> {`${id}`}
+            </span>
+          </p>
+        </div>
+
+        <div className={styles.fullwidth}>
+          <p>
+            <b>Amount</b>
+          </p>
           <p>{`$${amount.toLocaleString()}`}</p>
         </div>
-        <div style={{ width: '100%' }}>
-          <b>
-            <p>Tip</p>
-          </b>
+
+        <div className={styles.fullwidth}>
+          <p>
+            <b>Tip</b>
+          </p>
           <p>{`$${tip.toLocaleString()}`}</p>
         </div>
 
@@ -68,6 +75,7 @@ const DonationCard = ({ donation, setError }: DonationCardProps) => {
         >
           <button className={styles.edit}>Edit Donation</button>
         </Link>
+
         <button
           onClick={() => handleDeleteDonation(id)}
           className={styles.delete}
