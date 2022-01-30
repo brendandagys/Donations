@@ -29,17 +29,17 @@ export type Donation = {
 /** Root Mutation */
 export type Mutation = {
   __typename?: 'Mutation';
-  /** Creates a donation */
+  /** Create a donation */
   createDonation?: Maybe<Donation>;
-  /** Creates a user */
+  /** Create a user */
   createUser?: Maybe<User>;
-  /** Deletes a donation */
+  /** Delete a donation */
   deleteDonation?: Maybe<Donation>;
-  /** Deletes a user */
+  /** Delete a user */
   deleteUser?: Maybe<User>;
-  /** Updates a donation */
+  /** Update a donation */
   updateDonation?: Maybe<Donation>;
-  /** Updates a user */
+  /** Update a user */
   updateUser?: Maybe<User>;
 };
 
@@ -92,11 +92,11 @@ export type MutationUpdateUserArgs = {
 /** Root Query */
 export type Query = {
   __typename?: 'Query';
-  /** A single donation based on the ID */
+  /** A single donation found by ID */
   donation?: Maybe<Donation>;
   /** List of all donations */
   donations?: Maybe<Array<Maybe<Donation>>>;
-  /** A single book based on the ID */
+  /** A single book found by ID */
   user?: Maybe<User>;
   /** List of all users */
   users?: Maybe<Array<Maybe<User>>>;
