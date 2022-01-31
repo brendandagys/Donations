@@ -18,7 +18,14 @@ const DonationForm = ({ donation, selectOptions }: DonationFormProps) => {
 
   const [amount, setAmount] = useState(donation ? donation.amount : 0)
   const [tip, setTip] = useState(donation ? donation.tip : 0)
-  const [userId, setUserId] = useState(donation?.user?.id?.toString() || '1')
+  const [userId, setUserId] = useState(() => {
+    if (donation?.user?.id) return donation.user.id.toString()
+    else if (selectOptions?.users.length > 0)
+      return selectOptions.users[0].id.toString()
+    else return '1'
+  })
+
+  console.log(userId)
 
   const [createDonation, { loading: createLoading, error: createError }] =
     useCreateDonationMutation()
