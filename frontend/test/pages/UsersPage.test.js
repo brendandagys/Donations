@@ -1,13 +1,20 @@
-import { render, screen, waitFor } from '../test-utils'
+import { render, screen } from '../test-utils'
 import userEvent from '@testing-library/user-event'
-import { UsersPageNoApollo } from '../../pages/users'
+import { UsersPageNoApollo, getServerSideProps } from '../../pages/users'
+
+const useRouter = jest.spyOn(require('next/router'), 'useRouter')
+const router = { push: jest.fn(), replace: jest.fn() }
+useRouter.mockReturnValue(router)
 
 jest.mock('next/link', () => 'a')
 
 describe('Users Page', () => {
   test('Renders list of users', async () => {
-    render(<UsersPageNoApollo />)
-    await waitFor(() => new Promise((resolve) => setTimeout(resolve, 0)))
+    const {
+      props: { data, loading },
+    } = await getServerSideProps()
+
+    render(<UsersPageNoApollo data={data} loading={loading} />)
 
     const userDonationsButtons = screen.getAllByRole('button', {
       name: 'View donations',
@@ -18,14 +25,14 @@ describe('Users Page', () => {
 
   test('Can navigate home', async () => {
     render(<UsersPageNoApollo />)
-    await waitFor(() => new Promise((resolve) => setTimeout(resolve, 0)))
+
     const homeButton = screen.getByRole('button', { name: 'Go Home' })
     expect(homeButton.closest('a')).toHaveAttribute('href', '/')
   })
 
   test('Can navigate to create user form', async () => {
     render(<UsersPageNoApollo />)
-    await waitFor(() => new Promise((resolve) => setTimeout(resolve, 0)))
+
     const createUserButton = screen.getByRole('button', {
       name: 'Create New User',
     })
@@ -33,8 +40,12 @@ describe('Users Page', () => {
   })
 
   test('Can navigate to edit user form', async () => {
-    render(<UsersPageNoApollo />)
-    await waitFor(() => new Promise((resolve) => setTimeout(resolve, 0)))
+    const {
+      props: { data, loading },
+    } = await getServerSideProps()
+
+    render(<UsersPageNoApollo data={data} loading={loading} />)
+
     const editUserButtons = screen.getAllByRole('button', {
       name: 'Edit User',
     })
@@ -42,24 +53,32 @@ describe('Users Page', () => {
   })
 
   test('Can delete user', async () => {
-    render(<UsersPageNoApollo />)
-    await waitFor(() => new Promise((resolve) => setTimeout(resolve, 0)))
+    const {
+      props: { data, loading },
+    } = await getServerSideProps()
+
+    render(<UsersPageNoApollo data={data} loading={loading} />)
+
     const deleteUserButtons = screen.getAllByRole('button', {
       name: 'Delete User',
     })
     userEvent.click(deleteUserButtons[0])
-    await waitFor(() => new Promise((resolve) => setTimeout(resolve, 0)))
+
     const deleteError = screen.queryByText('Delete error', { exact: false })
     expect(deleteError).toBeNull()
   })
 
   test("Can view a user's donations", async () => {
-    render(<UsersPageNoApollo />)
-    await waitFor(() => new Promise((resolve) => setTimeout(resolve, 0)))
+    const {
+      props: { data, loading },
+    } = await getServerSideProps()
+
+    render(<UsersPageNoApollo data={data} loading={loading} />)
+
     const viewDonationsButtons = screen.getAllByRole('button', {
       name: 'View donations',
     })
     userEvent.click(viewDonationsButtons[0])
-    expect(screen.getByText('$40,000', { exact: false })).toBeInTheDocument()
+    expect(screen.getByText('$47,000', { exact: false })).toBeInTheDocument()
   })
 })

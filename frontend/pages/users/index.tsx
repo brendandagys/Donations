@@ -1,14 +1,13 @@
 import { useState, Fragment } from 'react'
 import Link from 'next/link'
-import withApollo from '../../lib/withApollo'
-import { getDataFromTree } from '@apollo/client/react/ssr'
-import { User, useAllUsersQuery } from '../../generated'
+import withApollo, { initApolloClient } from '../../lib/withApollo'
+import { User } from '../../generated'
+import { USERS_QUERY } from '../../graphql/queries/userQueries'
 import UserCard from '../../components/UserCard'
 import { get } from 'lodash'
 import styles from '../../styles/Commons.module.css'
 
-export const UsersPageNoApollo = () => {
-  const { data, loading } = useAllUsersQuery()
+export const UsersPageNoApollo = ({ data, loading }) => {
   const users = get(data, 'users', []) as User[]
   const [error, setError] = useState('')
 
@@ -43,4 +42,14 @@ export const UsersPageNoApollo = () => {
   )
 }
 
-export default withApollo(UsersPageNoApollo, { getDataFromTree })
+export async function getServerSideProps() {
+  const apolloClient = initApolloClient()
+
+  const { data, loading } = await apolloClient.query({
+    query: USERS_QUERY,
+  })
+
+  return { props: { data, loading } }
+}
+
+export default withApollo(UsersPageNoApollo)

@@ -11,7 +11,6 @@ useRouter.mockReturnValue(router)
 describe('Donation Page', () => {
   test('Renders form', async () => {
     render(<DonationPageNoApollo query={{ id: 'create' }} />)
-    await waitFor(() => new Promise((resolve) => setTimeout(resolve, 0)))
 
     const formLabel = screen.getByLabelText('Tip')
 
@@ -20,10 +19,13 @@ describe('Donation Page', () => {
 
   test('Can navigate to donations page', async () => {
     render(<DonationPageNoApollo query={{ id: 2 }} />)
+
     await waitFor(() => new Promise((resolve) => setTimeout(resolve, 0)))
+
     const viewAllDonationsButton = screen.getByRole('button', {
       name: 'View All Donations',
     })
+
     expect(viewAllDonationsButton.closest('a')).toHaveAttribute(
       'href',
       '/donations'
@@ -31,7 +33,7 @@ describe('Donation Page', () => {
   })
   test('Can create donation', async () => {
     render(<DonationPageNoApollo query={{ id: 'create' }} />)
-    await waitFor(() => new Promise((resolve) => setTimeout(resolve, 0)))
+
     const amountInput = screen.getByLabelText('Amount')
     userEvent.type(amountInput, '400')
     const tipInput = screen.getByLabelText('Tip')
@@ -42,13 +44,12 @@ describe('Donation Page', () => {
     })
     userEvent.click(createDonationButton)
 
-    await waitFor(() => new Promise((resolve) => setTimeout(resolve, 0)))
-
     expect(router.push).toHaveBeenCalledWith('/donations')
   })
 
   test('Can update donation', async () => {
     render(<DonationPageNoApollo query={{ id: 2 }} />)
+
     await waitFor(() => new Promise((resolve) => setTimeout(resolve, 0)))
 
     const amountInput = screen.getByLabelText('Amount')
@@ -63,8 +64,6 @@ describe('Donation Page', () => {
       name: 'Update Donation',
     })
     userEvent.click(updateDonationButton)
-
-    await waitFor(() => new Promise((resolve) => setTimeout(resolve, 0)))
 
     expect(screen.queryByText('Submission error!', { exact: false })).toBeNull()
   })

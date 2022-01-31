@@ -6,8 +6,6 @@ import {
   useUpdateDonationMutation,
   AllUsersSelectInputQuery,
 } from '../generated'
-import { USERS_QUERY } from '../graphql/queries/userQueries'
-import { DONATIONS_QUERY } from '../graphql/queries/donationQueries'
 import styles from '../styles/User.module.css'
 
 type DonationFormProps = {
@@ -20,19 +18,13 @@ const DonationForm = ({ donation, selectOptions }: DonationFormProps) => {
 
   const [amount, setAmount] = useState(donation ? donation.amount : 0)
   const [tip, setTip] = useState(donation ? donation.tip : 0)
-  const [userId, setUserId] = useState(
-    donation ? donation.user.id.toString() : '1'
-  )
+  const [userId, setUserId] = useState(donation?.user?.id?.toString() || '1')
 
   const [createDonation, { loading: createLoading, error: createError }] =
-    useCreateDonationMutation({
-      refetchQueries: [{ query: DONATIONS_QUERY }, { query: USERS_QUERY }],
-    })
+    useCreateDonationMutation()
 
   const [updateDonation, { loading: updateLoading, error: updateError }] =
-    useUpdateDonationMutation({
-      refetchQueries: [{ query: DONATIONS_QUERY }, { query: USERS_QUERY }],
-    })
+    useUpdateDonationMutation()
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()

@@ -1,8 +1,9 @@
 import { useState, Dispatch, SetStateAction } from 'react'
+import { useRouter } from 'next/router'
 import Link from 'next/link'
 import DonationCard from './DonationChildCard'
 import { User, useDeleteUserMutation } from '../generated'
-import { DONATIONS_QUERY } from '../graphql/queries/donationQueries'
+import { USERS_QUERY_SELECT_INPUT } from '../graphql/queries/userQueries'
 import styles from '../styles/Commons.module.css'
 
 type UserCardProps = {
@@ -15,16 +16,24 @@ const UserCard = ({ user, setError }: UserCardProps) => {
 
   const [showDonations, setShowDonations] = useState(false)
 
+  const router = useRouter()
+
+  const refreshData = () => {
+    router.replace(router.asPath)
+  }
+
   const [deleteUser, { loading, error }] = useDeleteUserMutation({
-    refetchQueries: [{ query: DONATIONS_QUERY }, 'AllUsers'],
+    refetchQueries: [{ query: USERS_QUERY_SELECT_INPUT }],
   })
 
   const toggleDonations = () => {
     setShowDonations((prev) => !prev)
   }
 
-  const handleDeleteUser = (userId: number) =>
+  const handleDeleteUser = (userId: number) => {
     deleteUser({ variables: { id: userId } })
+    refreshData()
+  }
 
   const renderedDonations = donations.map(({ amount, tip }, index) => (
     <DonationCard

@@ -5,8 +5,7 @@ import {
   useCreateUserMutation,
   useUpdateUserMutation,
 } from '../generated'
-import { USERS_QUERY } from '../graphql/queries/userQueries'
-import { DONATIONS_QUERY } from '../graphql/queries/donationQueries'
+import { USERS_QUERY_SELECT_INPUT } from '../graphql/queries/userQueries'
 import styles from '../styles/User.module.css'
 
 type UserFormProps = {
@@ -22,12 +21,12 @@ const UserForm = ({ user }: UserFormProps) => {
 
   const [createUser, { loading: createLoading, error: createError }] =
     useCreateUserMutation({
-      refetchQueries: [{ query: USERS_QUERY }, { query: DONATIONS_QUERY }],
+      refetchQueries: [{ query: USERS_QUERY_SELECT_INPUT }],
     })
 
   const [updateUser, { loading: updateLoading, error: updateError }] =
     useUpdateUserMutation({
-      refetchQueries: [{ query: USERS_QUERY }, { query: DONATIONS_QUERY }],
+      refetchQueries: [{ query: USERS_QUERY_SELECT_INPUT }],
     })
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

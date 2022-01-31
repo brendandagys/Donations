@@ -1,14 +1,13 @@
 import { useState, Fragment } from 'react'
 import Link from 'next/link'
-import withApollo from '../../lib/withApollo'
-import { getDataFromTree } from '@apollo/client/react/ssr'
-import { Donation, useAllDonationsQuery } from '../../generated'
+import withApollo, { initApolloClient } from '../../lib/withApollo'
+import { Donation } from '../../generated'
+import { DONATIONS_QUERY } from '../../graphql/queries/donationQueries'
 import DonationCard from '../../components/DonationCard'
 import { get } from 'lodash'
 import styles from '../../styles/Commons.module.css'
 
-export const DonationsPageNoApollo = () => {
-  const { data, loading } = useAllDonationsQuery()
+export const DonationsPageNoApollo = ({ data, loading }) => {
   const donations = get(data, 'donations', []) as Donation[]
   const [error, setError] = useState('')
 
@@ -43,4 +42,14 @@ export const DonationsPageNoApollo = () => {
   )
 }
 
-export default withApollo(DonationsPageNoApollo, { getDataFromTree })
+export async function getServerSideProps() {
+  const apolloClient = initApolloClient()
+
+  const { data, loading } = await apolloClient.query({
+    query: DONATIONS_QUERY,
+  })
+
+  return { props: { data, loading } }
+}
+
+export default withApollo(DonationsPageNoApollo)

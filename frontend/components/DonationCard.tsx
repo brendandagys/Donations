@@ -1,8 +1,7 @@
 import { Dispatch, SetStateAction } from 'react'
+import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { Donation, useDeleteDonationMutation } from '../generated'
-import { USERS_QUERY } from '../graphql/queries/userQueries'
-import { DONATIONS_QUERY } from '../graphql/queries/donationQueries'
 import styles from '../styles/Commons.module.css'
 
 type DonationCardProps = {
@@ -13,12 +12,18 @@ type DonationCardProps = {
 const DonationCard = ({ donation, setError }: DonationCardProps) => {
   const { id, user, amount, tip } = donation
 
-  const [deleteDonation, { loading, error }] = useDeleteDonationMutation({
-    refetchQueries: [{ query: USERS_QUERY }, { query: DONATIONS_QUERY }],
-  })
+  const router = useRouter()
 
-  const handleDeleteDonation = (donationId: number) =>
+  const refreshData = () => {
+    router.replace(router.asPath)
+  }
+
+  const [deleteDonation, { loading, error }] = useDeleteDonationMutation()
+
+  const handleDeleteDonation = (donationId: number) => {
     deleteDonation({ variables: { id: donationId } })
+    refreshData()
+  }
 
   const renderedDonor = (
     <div className={styles.donationBox}>

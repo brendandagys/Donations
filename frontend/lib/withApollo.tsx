@@ -3,6 +3,7 @@ import {
   ApolloProvider,
   HttpLink,
   InMemoryCache,
+  NormalizedCacheObject,
 } from '@apollo/client'
 import { useRouter } from 'next/router'
 import nextWithApollo from 'next-with-apollo'
@@ -34,5 +35,21 @@ const withApollo = nextWithApollo(
     },
   }
 )
+
+export const initApolloClient = (initialState: NormalizedCacheObject = {}) => {
+  const url = `http://localhost:${PORT}`
+  const cache = new InMemoryCache().restore(initialState)
+  const link = new HttpLink({
+    uri: `${url}/graphql`,
+    fetch,
+  })
+  const ssrMode = typeof window === 'undefined'
+  const client = new ApolloClient({
+    ssrMode,
+    link,
+    cache,
+  })
+  return client
+}
 
 export default withApollo

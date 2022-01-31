@@ -41,3 +41,5 @@ npm i
 ```
 npm run dev
 ```
+
+7. Visit `http://localhost:3000` in your browser to view the application
